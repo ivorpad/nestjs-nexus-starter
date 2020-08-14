@@ -1,0 +1,40 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "postgresql"
+  url = "***"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// Models must be singular or Nexus will complain 
+
+model Faq {
+  id        Int      @default(autoincrement()) @id
+  title     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime
+  body      String
+}
+
+model PageSetting {
+  id           Int          @default(autoincrement()) @id
+  name         String
+  value        String
+  storeHost    String
+  TrackingPage TrackingPage @relation(fields: [storeHost], references: [storeHost])
+
+  @@index([name])
+}
+
+model TrackingPage {
+  storeHost   String     @id
+  name        String?
+  description String?
+  email       String?     @unique
+  storeId     String?     @unique
+  settings    PageSetting[]
+}
